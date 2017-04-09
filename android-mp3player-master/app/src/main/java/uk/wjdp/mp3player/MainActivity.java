@@ -17,41 +17,38 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+
 import android.widget.ListView;
-import android.widget.TextView;
+
+
+import android.support.v4.view.GestureDetectorCompat;
+
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 
 import uk.wjdp.mp3player.SongList.Song;
 
 public class MainActivity extends AppCompatActivity {
 
     ListView listView_songs;
-    TextView textView_status;
-    Button button_play;
-    Button button_pause;
-    Button button_next;
-    Button button_stop;
+
+    private GestureDetectorCompat GDetect;
 
     final String TAG = "MainActivity";
 
-    private PlayerService.PlayerBinder myPlayerService = null;
+    private PlayerService.PlayerBinder myPlayerService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        GDetect = new GestureDetectorCompat(this, new LearnGesture());
         Log.d(TAG, "onCreate");
 
-
-
         // Store ref to UI components
-        textView_status = (TextView)findViewById(R.id.status_text);
+
         listView_songs = (ListView)findViewById(R.id.song_list);
-        button_play = (Button)findViewById(R.id.play_button);
-        button_pause = (Button)findViewById(R.id.pause_button);
-        button_next = (Button)findViewById(R.id.next_button);
-        button_stop = (Button)findViewById(R.id.stop_button);
+
 
         // Create a thread to fetch the song list
         // We do this in a thread to prevent blocking the UI during the app's creation
@@ -59,38 +56,95 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // Get phone's media, making this final ensures it's available to the next Runnable
-                final SongList songList = getMedia();
-                Log.d(TAG, "Songs: " + songList.song_list.size());
+
 
                 // We now need to update the UI, which we cannot do inside a thread as the Android
                 // UI is not thread-safe. So we post to the message queue of the UI thread.
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG, "adding songs to listView from posted Runnable");
-                        // Create an adapter from the song list
-                        final ArrayAdapter<Song> songItemsAdapter = new ArrayAdapter<Song>(MainActivity.this,
-                                android.R.layout.simple_list_item_1, songList.song_list);
-
-                        // Pass that adapter to the list view, the list will update with the contents of the adapter
-                        listView_songs.setAdapter(songItemsAdapter);
-
-                        // Set a click listener for the list view
-                        listView_songs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                // User 'clicks' a song and an activity method is fired with that song
-                                // As the listview has the full song objects we don't have to do any lookup here
-                                Song song = (Song) ((ListView) parent).getItemAtPosition(position);
-                                Log.d(TAG, "Song selected - " + song.title);
-                                songSelected(song);
-                            }
-                        });
-                    }
-                });
+//                MainActivity.this.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Log.d(TAG, "adding songs to listView from posted Runnable");
+//                        // Create an adapter from the song list
+//                        final ArrayAdapter<Song> songItemsAdapter = new ArrayAdapter<Song>(MainActivity.this,
+//                                android.R.layout.simple_list_item_1, songList.song_list);
+//
+//                        // Pass that adapter to the list view, the list will update with the contents of the adapter
+//                        listView_songs.setAdapter(songItemsAdapter);
+//                        for (int i = 0; i < songList.song_list.size(); i++){
+//                            Song song = songList.song_list.get(i);
+//                            songSelected(song);
+//                        }
+//                        // Set a click listener for the list view
+//                        listView_songs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                            @Override
+//                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                                // User 'clicks' a song and an activity method is fired with that song
+//                                // As the listview has the full song objects we don't have to do any lookup here
+//
+//                                for (int i = 0; i < songList.song_list.size(); i++){
+//                                    Song song = songList.song_list.get(i);
+//                                    songSelected(song);
+//                                }
+//
+//                            }
+//
+//                        });
+//
+//                    }
+//                });
 
             }
         }).start();
+
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        this.GDetect.onTouchEvent(event);
+        return true;
+    }
+
+    class LearnGesture extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onDoubleTapEvent(MotionEvent e) {
+            myPlayerService.play();
+            return true;
+        }
+
+
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2,
+                               float velocityX, float velocityY) {
+
+            float distanceX = event2.getX() - event1.getX();
+            float distanceY = event2.getY() - event1.getY();
+            if (Math.abs(distanceX) > Math.abs(distanceY)) {
+                if (distanceX > 0) {
+                    Log.d("ORAORAORA", "THIS IS NEXT ");
+                    myPlayerService.next();
+                }
+                else {
+                    myPlayerService.stop();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent event1) {
+            myPlayerService.pause();
+
+        }
+
+
+        @Override
+        public boolean onDown(MotionEvent event){
+            return true;
+        }
+
 
     }
 
@@ -102,7 +156,16 @@ public class MainActivity extends AppCompatActivity {
         // Have to start using startService so service isn't killed when this activity unbinds from
         // it onStop
         startService(intent);
+
         bindService(intent, playerServiceConnection, 0);
+        Log.d(TAG, "After the startservice");
+        Log.d(TAG, "After the startservice");
+        Log.d(TAG, "After the startservice");
+        Log.d(TAG, "After the startservice");
+        Log.d(TAG, "After the startservice");
+        Log.d(TAG, "After the startservice");
+        Log.d(TAG, "After the startservice");
+        Log.d(TAG, "After the startservice");
         // Register a receiver to the service's callbacks
         registerReceiver(receiver, new IntentFilter(PlayerService.NOTIFICATION));
     }
@@ -121,6 +184,12 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "onServiceConnected");
             // Store a ref to the service
             myPlayerService = (PlayerService.PlayerBinder) service;
+            final SongList songList = getMedia();
+            Log.d(TAG, "Songs: " + songList.song_list.size());
+            for (int i = 0; i < songList.song_list.size(); i++){
+                Song song = songList.song_list.get(i);
+                songSelected(song);
+            }
             // Request the service sends us the current state so UI can be updated
             myPlayerService.update_state();
         }
@@ -148,20 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Perform some UI work depending on callback
                 Boolean nextState = queue > 1;
-                switch (callback) {
-                    case PlayerService.PLAY:
-                        textView_status.setText("► " + artist + " - " + title + " (" + queue + ")");
-                        setButtonStates(false, true, nextState, true);
-                        break;
-                    case PlayerService.PAUSE:
-                        textView_status.setText("▋▋ " + artist + " - " + title + " (" + queue + ")");
-                        setButtonStates(true, false, nextState, true);
-                        break;
-                    case PlayerService.STOP:
-                        textView_status.setText("No Song Playing");
-                        setButtonStates(false, false, false, false);
-                        break;
-                }
+
             }
         }
     };
@@ -207,27 +263,7 @@ public class MainActivity extends AppCompatActivity {
         myPlayerService.setup(song);
     }
 
-    void setButtonStates(Boolean play_state, Boolean pause_state, Boolean next_state, Boolean stop_state) {
-        // Utitlity function to change all three of the button's states
-        button_play.setEnabled(play_state);
-        button_pause.setEnabled(pause_state);
-        button_next.setEnabled(next_state);
-        button_stop.setEnabled(stop_state);
-    }
-
-    // Button event handlers
-
-    public void buttonPlay(View v) {
-        myPlayerService.play();
-    }
-    public void buttonPause(View v) {
-        myPlayerService.pause();
-    }
-    public void buttonNext(View v) {
-        myPlayerService.next();
-    }
-    public void buttonStop(View v) {
-        myPlayerService.stop();
-    }
 
 }
+
+
