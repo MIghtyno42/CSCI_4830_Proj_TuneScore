@@ -11,12 +11,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 import android.widget.ListView;
 
@@ -25,6 +27,9 @@ import android.support.v4.view.GestureDetectorCompat;
 
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import uk.wjdp.mp3player.SongList.Song;
 
@@ -158,14 +163,6 @@ public class MainActivity extends AppCompatActivity {
         startService(intent);
 
         bindService(intent, playerServiceConnection, 0);
-        Log.d(TAG, "After the startservice");
-        Log.d(TAG, "After the startservice");
-        Log.d(TAG, "After the startservice");
-        Log.d(TAG, "After the startservice");
-        Log.d(TAG, "After the startservice");
-        Log.d(TAG, "After the startservice");
-        Log.d(TAG, "After the startservice");
-        Log.d(TAG, "After the startservice");
         // Register a receiver to the service's callbacks
         registerReceiver(receiver, new IntentFilter(PlayerService.NOTIFICATION));
     }
@@ -190,6 +187,33 @@ public class MainActivity extends AppCompatActivity {
                 Song song = songList.song_list.get(i);
                 songSelected(song);
             }
+            FileOutputStream openFileOutput = null;
+            File file;
+
+            try {
+                file = new File("D:\\TuneScoreGestureData.txt");
+                openFileOutput = new FileOutputStream(file);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                byte[] contentInBytes = "LOLOLO".getBytes();
+                openFileOutput.write(contentInBytes);
+                openFileOutput.flush();
+                openFileOutput.close();
+
+                Log.d(TAG, "Suiccsesfully written");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                try {
+                    if (openFileOutput != null) {
+                        openFileOutput.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
             // Request the service sends us the current state so UI can be updated
             myPlayerService.update_state();
         }
