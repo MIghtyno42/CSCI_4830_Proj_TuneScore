@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MP3Player</string>
+    <string name="title_activity_gesture_pad">GesturePad</string>
+</resources>
