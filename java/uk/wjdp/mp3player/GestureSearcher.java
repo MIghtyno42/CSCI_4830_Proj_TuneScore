@@ -1,6 +1,5 @@
 package uk.wjdp.mp3player;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,13 +30,6 @@ public class GestureSearcher extends AppCompatActivity {
 
         GDetect = new GestureDetectorCompat(this, new GestureSearcher.LearnGesture());
 
-
-
-
-
-
-
-        //
     }
 
 
@@ -57,34 +48,6 @@ public class GestureSearcher extends AppCompatActivity {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             gestureString = gestureString + "TAP";
-            return true;
-        }
-
-
-        public boolean onLongpress (MotionEvent e){
-            try {
-                AssetManager assetManager = getApplicationContext().getAssets();
-
-                InputStream is = null;
-                is = assetManager.open("tuneScoreFile.txt");
-
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-
-                while ( (line = rd.readLine()) != null ){
-                    if(line.matches(gestureString)){
-                        Log.d("HEY YA", "ORAORAORAORAOROAR");
-                        break;
-                    }
-                    else{
-                        Log.d("NAH SON", line);
-                    }
-                }
-                //onBackPressed();
-                Log.d("NUTTIN", "made it out");
-            } catch (IOException event) {
-                event.printStackTrace();
-            }
             return true;
         }
 
@@ -117,6 +80,42 @@ public class GestureSearcher extends AppCompatActivity {
                 }
             }
             return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent event1) {
+            try {
+                AssetManager assetManager = getApplicationContext().getAssets();
+
+                InputStream is = null;
+                is = assetManager.open("tuneScoreFile.txt");
+
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                String line;
+                String prevline = "NONE";
+
+                while ( (line = rd.readLine()) != null ){
+                    if(line.matches(gestureString)){
+                        Log.d("HEY YA", "ORAORAORAORAOROAR");
+                        break;
+                    }
+                    prevline = line;
+
+                }
+
+                Intent intent = getIntent();
+                intent.putExtra("Key",prevline);
+                setResult(RESULT_OK, intent);
+                finish();
+                /*Intent i = new Intent(GestureSearcher.this, MainActivity.class);
+                i.putExtra("KEY", prevline);
+                Log.d("NUTTIN", prevline);*/
+                onBackPressed();
+
+            } catch (IOException event) {
+                event.printStackTrace();
+            }
+
         }
 
 

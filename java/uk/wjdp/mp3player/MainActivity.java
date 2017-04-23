@@ -29,9 +29,10 @@ import uk.wjdp.mp3player.SongList.Song;
 public class MainActivity extends AppCompatActivity {
 
     private GestureDetectorCompat GDetect;
-
+    public static final int REQUEST_CODE = 1;
     final String TAG = "MainActivity";
 
+    String SongGrabberName = null;
     private PlayerService.PlayerBinder myPlayerService;
 
     @Override
@@ -57,6 +58,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == REQUEST_CODE  && resultCode  == RESULT_OK) {
+
+                String requiredValue = data.getStringExtra("Key");
+                SongGrabberName = requiredValue;
+                Log.d("COMPLETIO", requiredValue);
+            }
+        } catch (Exception ex) {
+
+        }
+
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
@@ -97,7 +114,24 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
 
-                    startActivity(new Intent(MainActivity.this, GestureSearcher.class));
+                    Intent intent = new Intent(MainActivity.this, GestureSearcher.class);
+                    startActivityForResult(intent, REQUEST_CODE);
+
+
+
+
+                    /*Bundle extras = getIntent().getExtras();
+                    String value = null;
+                    while (value == null){
+                        value = extras.getString("KEY");
+                    }
+
+                    if (value == "Last Train Home"){
+                        Log.d("HEHE", "WESFEA");
+                    }
+                    else{
+                        Log.d("HEHE", "MISS");
+                    }*/
                 }
             }
             return false;
