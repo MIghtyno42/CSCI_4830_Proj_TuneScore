@@ -9,25 +9,17 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
-import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-
-import android.widget.ListView;
-
-
 import android.support.v4.view.GestureDetectorCompat;
-
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.widget.ListView;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -201,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                 openFileOutput.flush();
                 openFileOutput.close();
 
-                Log.d(TAG, "Suiccsesfully written");
+                Log.d(TAG, "Succsesfully written");
             } catch (IOException e) {
                 e.printStackTrace();
             }finally {

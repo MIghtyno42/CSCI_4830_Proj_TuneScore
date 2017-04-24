@@ -129,7 +129,7 @@ public class PlayerService extends Service {
                 playerMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 
                 // Grab the song to be played and set our instance ref
-                song = songList.popSong();
+                song = songList.nextSong();
 
                 try {
                     // Select and load media file
@@ -161,6 +161,29 @@ public class PlayerService extends Service {
                 });
 
                 state = PLAY;
+            }
+        }
+
+        void prev() {
+            // Check if we can play
+            if (playerMediaPlayer != null) {
+                playerMediaPlayer = new MediaPlayer();
+                playerMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+
+                // Grab the song to be played and set our instance ref
+                song = songList.prevSong();
+
+                try {
+                    // Select and load media file
+                    playerMediaPlayer.setDataSource(song.path);
+                    playerMediaPlayer.prepare();
+                    // Run our play method
+                    this.play();
+
+                } catch (IOException e) {
+                    // If the file doesn't exist, post an error to the log
+                    Log.e(TAG, "File not found!");
+                }
             }
         }
 

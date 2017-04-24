@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="android" name="Android">
+      <configuration>
+        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/../../CSCI_4830_Proj_TuneScore/gen" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/../../CSCI_4830_Proj_TuneScore/gen" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/../../CSCI_4830_Proj_TuneScore/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/../../CSCI_4830_Proj_TuneScore/res" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/../../CSCI_4830_Proj_TuneScore/assets" />
+        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/../../CSCI_4830_Proj_TuneScore/libs" />
+        <option name="PROGUARD_LOGS_FOLDER_RELATIVE_PATH" value="/../../CSCI_4830_Proj_TuneScore/proguard_logs" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" generated="true" />
+    </content>
+    <orderEntry type="jdk" jdkName="Android API 24 Platform" jdkType="Android SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

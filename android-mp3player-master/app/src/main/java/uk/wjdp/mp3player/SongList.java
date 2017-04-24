@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 public class SongList {
     // Class for managing a list of Songs
+    public int songIndex = 0;
+    public int prevIndex = 0;
+
 
     public ArrayList<Song> song_list = new ArrayList<Song>();
 
@@ -28,6 +31,22 @@ public class SongList {
         song_list.remove(0);
         return next;
     }
+
+    public Song nextSong() {
+        if (songIndex > song_list.size()) {
+            songIndex = 0;
+        }
+        Song next = song_list.get(songIndex);
+        prevIndex = songIndex;
+        songIndex++;
+        return next;
+    }
+
+    public Song prevSong() {
+        Song next = song_list.get(prevIndex);
+        return next;
+    }
+
 
     public void emptyList() {
         song_list.clear();
